@@ -1,1 +1,130 @@
-{"metadata":{"kernelspec":{"language":"python","display_name":"Python 3","name":"python3"},"language_info":{"pygments_lexer":"ipython3","nbconvert_exporter":"python","version":"3.6.4","file_extension":".py","codemirror_mode":{"name":"ipython","version":3},"name":"python","mimetype":"text/x-python"},"kaggle":{"accelerator":"none","dataSources":[{"sourceId":9742924,"sourceType":"datasetVersion","datasetId":5963963}],"isInternetEnabled":false,"language":"python","sourceType":"notebook","isGpuEnabled":false}},"nbformat_minor":4,"nbformat":4,"cells":[{"cell_type":"code","source":"","metadata":{},"execution_count":null,"outputs":[]},{"cell_type":"code","source":"import pandas as pd\nfrom tabulate import tabulate\n\nwith open(\"stack-overflow-developer-survey-2024/survey_results_public.csv\") as f:\n    df = pd.read_csv(f)\n\n# cols = [\"Age\",\"Employment\",\"EdLevel\",\"LearnCode\",\"YearsCode\",\"YearsCodePro\",\"DevType\",\"OrgSize\",\"PurchaseInfluence\",\"Country\",\"TimeSearching\",\"TimeAnswering\",\"CompTotal\",]\n\ndf = df.drop_duplicates()\ndf[\"CompTotal\"] = pd.to_numeric(df[\"CompTotal\"], errors='coerce')\ndf[\"CompTotal\"] = df[\"CompTotal\"].fillna(0)\ndf['CompTotal'] = df['CompTotal']/1000\ndf = df[df['CompTotal'].notna()]\ndf = df[df['CompTotal'] > 15]\ndf['percentile'] = df['CompTotal'].rank(pct=True) * 100\n\ndf = df[df['percentile'] >= 2]\ndf = df[df['percentile'] <= 80]\n\ndf['p90'] = df['CompTotal'].quantile(0.9)\n\nprint(df.shape[0])\n\ncols = [\"Age\", \"DevType\", \"CompTotal\", \"percentile\", \"p90\"]\ndf = df[cols]\ndf = df.sort_values(by='CompTotal', ascending=True)\nprint(tabulate(df, headers='keys', tablefmt='psql'))","metadata":{"_uuid":"8f2839f25d086af736a60e9eeb907d3b93b6e0e5","_cell_guid":"b1076dfc-b9ad-4769-8c92-a6c4dae69d19","trusted":true},"execution_count":null,"outputs":[]},{"cell_type":"code","source":"","metadata":{},"execution_count":null,"outputs":[]}]}
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "0a5d4454",
+   "metadata": {
+    "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
+    "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
+    "execution": {
+     "iopub.execute_input": "2024-10-28T10:01:17.636411Z",
+     "iopub.status.busy": "2024-10-28T10:01:17.635909Z",
+     "iopub.status.idle": "2024-10-28T10:01:26.230947Z",
+     "shell.execute_reply": "2024-10-28T10:01:26.229556Z"
+    },
+    "papermill": {
+     "duration": 8.602636,
+     "end_time": "2024-10-28T10:01:26.233711",
+     "exception": false,
+     "start_time": "2024-10-28T10:01:17.631075",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "25117\n"
+     ]
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "survey_data_path = \"/kaggle/input/stackoverflow-survey-2024/survey_results_public.csv\"        \n",
+    "survey_schema_path = \"/kaggle/input/stackoverflow-survey-2024/survey_results_schema.csv\"\n",
+    "\n",
+    "df = pd.read_csv(survey_data_path)\n",
+    "\n",
+    "# cols = [\"Age\",\"Employment\",\"EdLevel\",\"LearnCode\",\"YearsCode\",\"YearsCodePro\",\"DevType\",\"OrgSize\",\"PurchaseInfluence\",\"Country\",\"TimeSearching\",\"TimeAnswering\",\"CompTotal\",]\n",
+    "\n",
+    "df = df.drop_duplicates()\n",
+    "df[\"CompTotal\"] = pd.to_numeric(df[\"CompTotal\"], errors='coerce')\n",
+    "df[\"CompTotal\"] = df[\"CompTotal\"].fillna(0)\n",
+    "df['CompTotal'] = df['CompTotal']/1000\n",
+    "df = df[df['CompTotal'].notna()]\n",
+    "df = df[df['CompTotal'] > 15]\n",
+    "df['percentile'] = df['CompTotal'].rank(pct=True) * 100\n",
+    "\n",
+    "df = df[df['percentile'] >= 2]\n",
+    "df = df[df['percentile'] <= 80]\n",
+    "\n",
+    "df['p90'] = df['CompTotal'].quantile(0.9)\n",
+    "\n",
+    "print(df.shape[0])\n",
+    "\n",
+    "cols = [\"Age\", \"DevType\", \"CompTotal\", \"percentile\", \"p90\"]\n",
+    "df = df[cols]\n",
+    "df = df.sort_values(by='CompTotal', ascending=True)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5e72a10a",
+   "metadata": {
+    "papermill": {
+     "duration": 0.001877,
+     "end_time": "2024-10-28T10:01:26.238203",
+     "exception": false,
+     "start_time": "2024-10-28T10:01:26.236326",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "none",
+   "dataSources": [
+    {
+     "datasetId": 5963963,
+     "sourceId": 9742924,
+     "sourceType": "datasetVersion"
+    }
+   ],
+   "dockerImageVersionId": 30786,
+   "isGpuEnabled": false,
+   "isInternetEnabled": false,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.14"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 12.493396,
+   "end_time": "2024-10-28T10:01:26.763515",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2024-10-28T10:01:14.270119",
+   "version": "2.6.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
